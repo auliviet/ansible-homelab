@@ -1,0 +1,8 @@
+# Configure Debian servers
+# Always target one host and dry run first:
+#   ansible-playbook playbooks/servers.yml --limit [hostname] --check --diff -K
+
+- name: Apply the common role to all servers
+  hosts: servers
+  roles:
+    - common

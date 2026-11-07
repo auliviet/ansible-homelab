@@ -7,7 +7,7 @@ any machine can be wiped and rebuilt from it plus a backup.
 
 | Host      | Hardware       | OS     | Purpose                                       |
 | --------- | -------------- | ------ | --------------------------------------------- |
-| mac       | MacBook M4     | macOS  | Daily machine and Ansible control node        |
+| macos     | MacBook M4     | macOS  | Daily machine and Ansible control node        |
 | gandi-vps | Remote VPS     | Debian | Public web app                                |
 | # pi5     | Raspberry Pi 5 | Debian | NAS, backup target, media server              |
 | # pi4     | Raspberry Pi 4 | Debian | Testing, local apps; first target for changes |
@@ -18,31 +18,65 @@ any machine can be wiped and rebuilt from it plus a backup.
 - Playbooks run from the Mac over SSH (push model, no agents).
 - Host names come from `~/.ssh/config` on the Mac.
 - Variables live only in `inventory/`. Roles have no defaults.
+- Secrets are kept in ansible-vault.
 
 ## Layout
 
 ```
-ansible.cfg          # Ansible settings (inventory path, output format)
+ansible.cfg          # Ansible settings (inventory path, output format, vault password script)
+vault-pass.sh        # Prints ansible-vault passwrod from MacOS keychain
 requirements.yml     # Ansible collections this repo needs
 inventory/
-  hosts.yml          # machines and groups
-  group_vars/all/    # variables for every machine
-MANUAL-STEPS.md      # steps that can't be automated
+  hosts.yml          # Machines and groups
+  group_vars/
+    all/vars.yml     # Variables for every machine
+    all/vault.yml    # Encrypted secrets (password hash, sudo password)
+    servers.yml
+plabyooks/
+  servers.yml        # Configure Debian servers
+roles/
+  common/            # Base steps for Debian (user, SSH, timezone, default packages)
+MANUAL-STEPS.md      # Steps that can't be automated
 ```
 
 ## Getting started
 
+First follow `MANUAL-STEPS.md`.
 Run every command from the repo root, so Ansible picks up `ansible.cfg`.
 
+## Common commands
+
 ```bash
-ansible-galaxy collection install -r requirements.yml   # once, and after editing requirements.yml
-ansible-inventory --graph                               # show groups and hosts
-ansible all -m ansible.builtin.ping                     # check Ansible can reach every host
+# Install Ansible requirements. Required once, and after editing requirements.yml
+ansible-galaxy collection install -r requirements.yml
+
+# Show groups and hosts
+ansible-inventory --graph
+
+# Check Ansible can reach every host
+ansible all -m ansible.builtin.ping
+
+# Configure one server: dry run first, then apply
+ansible-playbook playbooks/servers.yml --limit $HOSTNAME --chek --diff
+ansible-playbook playbooks/servers.yml --limit $HOSTNAME
+
+# First run on a new VPS with debian default user
+ansible-playbook playbooks/servers.yml --limit $HOSTNAME --u debian
+
+# View or edit ansible-vault secrets
+ansible-vault view inventory/group_vars/all/vault.yml
+ansible-vault edit inventory/group_vars/all/vault.yml
+
+# Check the code
+ansible-lint playbook/servers.yml
 ```
+
+No `-J` or `-K` needed. Vault password comes from the keychain (`vault-pass.sh`)
+and sudo password is stored in the vault.
 
 ## Rules
 
 - Dry run first: `--check --diff`.
-- Test every change on `pi4` first: `--limit pi4`.
-- Pin versions (collections, Docker images); update them through Git.
+- Run twice. The second run should report `changed=0`
+- Pin versions; update them through Git.
 - Tag known-good states: `git tag YYYY-MM-stable`.

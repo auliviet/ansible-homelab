@@ -1,0 +1,5 @@
+// Refresh the package list once a day.
+APT::Periodic::Update-Package-Lists "1";
+
+// Run unattended-upgrade once a day.
+APT::Periodic::Unattended-Upgrade "1";

@@ -1,0 +1,14 @@
+# Common variables applied to all hosts
+username: auliviet
+timezone: Australia/Sydney
+shared_packages:
+  - curl
+  - git
+  - htop
+  - tmux
+  - tree
+  - vim
+  - zsh
+
+# Password hash from vault.yml
+user_password_hash: "{{ vault_user_password_hash }}"
