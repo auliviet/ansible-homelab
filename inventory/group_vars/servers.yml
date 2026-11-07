@@ -5,3 +5,4 @@ common_servers_packages:
   - tealdeer
 
 hardening_ufw_allowed_ports: [22]
+hardening_fail2ban_enabled: false

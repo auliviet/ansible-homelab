@@ -37,6 +37,7 @@ Note: Ansible needs _some_ user it can log in as with a SSH key. After the first
   ansible-playbook playbooks/servers.yml --limit $HOSTNAME -u debian
   ```
 
+  - Before applying `hardening` role, open an SSH connection with the provided user.
   - Test the new username defined in `group_vars/all` can be used to connect via ssh: `ssh $USERNAME@$HOSTNAME` and `sudo whoami`
 
 ## Secrets to keep in the password manager

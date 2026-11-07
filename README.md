@@ -23,28 +23,28 @@ any machine can be wiped and rebuilt from it plus a backup.
 ## Layout
 
 ```
-ansible.cfg          # Ansible settings (inventory path, output format, vault password script)
-vault-pass.sh        # Prints ansible-vault passwrod from MacOS keychain
-requirements.yml     # Ansible collections this repo needs
+ansible.cfg            # Ansible settings (inventory path, output format, vault password script)
+vault-pass.sh          # Prints ansible-vault passwrod from MacOS keychain
+requirements.yml       # Ansible collections this repo needs
 inventory/
-  hosts.yml          # Machines and groups
+  hosts.yml            # Machines and groups
   group_vars/
-    all/vars.yml     # Variables for every machine
-    all/vault.yml    # Encrypted secrets (password hash, sudo password)
-    servers.yml
+    all/vars.yml       # Variables for every machine
+    all/vault.yml      # Encrypted secrets (password hash, sudo password)
+    servers.yml        # Variables for Debian servers
+    public_servers.yml # Overrides for public servers
 plabyooks/
-  servers.yml        # Configure Debian servers
+  servers.yml          # Configure Debian servers
 roles/
-  common/            # Base steps for Debian (user, SSH, timezone, default packages)
-MANUAL-STEPS.md      # Steps that can't be automated
+  common/              # Base steps for Debian (user, SSH, timezone, default packages)
+  hardening/           # Security settings
+MANUAL-STEPS.md        # Steps that can't be automated
 ```
 
 ## Getting started
 
 First follow `MANUAL-STEPS.md`.
 Run every command from the repo root, so Ansible picks up `ansible.cfg`.
-
-## Common commands
 
 ```bash
 # Install Ansible requirements. Required once, and after editing requirements.yml
@@ -56,13 +56,18 @@ ansible-inventory --graph
 # Check Ansible can reach every host
 ansible all -m ansible.builtin.ping
 
+# First run on a new VPS with debian provided user
+# (Hardening blocks subsequent access from provided users after first run)
+ansible-playbook playbooks/servers.yml --limit $HOSTNAME --u debian
+
 # Configure one server: dry run first, then apply
 ansible-playbook playbooks/servers.yml --limit $HOSTNAME --chek --diff
 ansible-playbook playbooks/servers.yml --limit $HOSTNAME
+```
 
-# First run on a new VPS with debian default user
-ansible-playbook playbooks/servers.yml --limit $HOSTNAME --u debian
+## Common commands
 
+```bash
 # View or edit ansible-vault secrets
 ansible-vault view inventory/group_vars/all/vault.yml
 ansible-vault edit inventory/group_vars/all/vault.yml

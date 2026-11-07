@@ -1,0 +1,13 @@
+# Harden SSH rules
+# Managed by Ansible (role: hardening).
+
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitEmptyPasswords no
+PubkeyAuthentication yes
+AuthenticationMethods publickey
+ClientAliveInterval 300
+ClientAliveCountMax 2
+LoginGraceTime 30
+AllowUsers {{ username }}
