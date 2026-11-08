@@ -34,7 +34,7 @@ Note: Ansible needs _some_ user it can log in as with a SSH key. After the first
 - [ ] If a default `debian` user is used when creating the server (e.g. VPS), the first run needs to connect as this default user:
 
   ```bash
-  ansible-playbook playbooks/servers.yml --limit $HOSTNAME -u debian
+  ansible-playbook playbooks/configure-servers.yml --limit $HOSTNAME -u debian
   ```
 
   - Before applying `hardening` role, open an SSH connection with the provided user.

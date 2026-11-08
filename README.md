@@ -1,4 +1,4 @@
-# HOMELAB
+# HOMELAB AUTOMATION
 
 Ansible setup for my personal machines. This repo is the source of truth:
 any machine can be wiped and rebuilt from it plus a backup.
@@ -7,7 +7,7 @@ any machine can be wiped and rebuilt from it plus a backup.
 
 | Host      | Hardware       | OS     | Purpose                                       |
 | --------- | -------------- | ------ | --------------------------------------------- |
-| macos     | MacBook M4     | macOS  | Daily machine and Ansible control node        |
+| mac       | MacBook M4     | macOS  | Daily machine and Ansible control node        |
 | gandi-vps | Remote VPS     | Debian | Public web app                                |
 | # pi5     | Raspberry Pi 5 | Debian | NAS, backup target, media server              |
 | # pi4     | Raspberry Pi 4 | Debian | Testing, local apps; first target for changes |
@@ -23,22 +23,22 @@ any machine can be wiped and rebuilt from it plus a backup.
 ## Layout
 
 ```
-ansible.cfg            # Ansible settings (inventory path, output format, vault password script)
-vault-pass.sh          # Prints ansible-vault passwrod from MacOS keychain
-requirements.yml       # Ansible collections this repo needs
+ansible.cfg             # Ansible settings (inventory path, output format, vault password script)
+vault-pass.sh           # Prints ansible-vault passwrod from MacOS keychain
+requirements.yml        # Ansible collections this repo needs
 inventory/
-  hosts.yml            # Machines and groups
+  hosts.yml             # Machines and groups
   group_vars/
-    all/vars.yml       # Variables for every machine
-    all/vault.yml      # Encrypted secrets (password hash, sudo password)
-    servers.yml        # Variables for Debian servers
-    public_servers.yml # Overrides for public servers
+    all/vars.yml        # Variables for every machine
+    all/vault.yml       # Encrypted secrets (password hash, sudo password)
+    servers.yml         # Variables for Debian servers
+    public_servers.yml  # Overrides for public servers
 plabyooks/
-  servers.yml          # Configure Debian servers
+  configure-servers.yml # Configure Debian servers
 roles/
-  common/              # Base steps for Debian (user, SSH, timezone, default packages)
-  hardening/           # Security settings
-MANUAL-STEPS.md        # Steps that can't be automated
+  common/               # Base steps for Debian (user, SSH, timezone, default packages)
+  hardening/            # Security settings
+MANUAL-STEPS.md         # Steps that can't be automated
 ```
 
 ## Getting started
@@ -58,11 +58,11 @@ ansible all -m ansible.builtin.ping
 
 # First run on a new VPS with debian provided user
 # (Hardening blocks subsequent access from provided users after first run)
-ansible-playbook playbooks/servers.yml --limit $HOSTNAME --u debian
+ansible-playbook playbooks/configure-servers.yml --limit $HOSTNAME --u debian
 
 # Configure one server: dry run first, then apply
-ansible-playbook playbooks/servers.yml --limit $HOSTNAME --chek --diff
-ansible-playbook playbooks/servers.yml --limit $HOSTNAME
+ansible-playbook playbooks/configure-servers.yml --limit $HOSTNAME --chek --diff
+ansible-playbook playbooks/configure-servers.yml --limit $HOSTNAME
 ```
 
 ## Common commands
@@ -73,7 +73,7 @@ ansible-vault view inventory/group_vars/all/vault.yml
 ansible-vault edit inventory/group_vars/all/vault.yml
 
 # Check the code
-ansible-lint playbook/servers.yml
+ansible-lint playbook/configure-servers.yml
 ```
 
 No `-J` or `-K` needed. Vault password comes from the keychain (`vault-pass.sh`)
