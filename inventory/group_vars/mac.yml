@@ -1,0 +1,38 @@
+mac_packages:
+  - fzf
+  - mas
+  - tlrc
+
+mac_dev_packages:
+  - ansible
+  - ansible-lint
+  - nvm
+  - python@3.12
+  - semgrep
+
+mac_homebrew_casks:
+  - affinity
+  - blender
+  - docker-desktop
+  - drawio
+  - firefox@developer-edition
+  - freecad
+  - iterm2
+  - proton-drive
+  - proton-mail
+  - proton-pass
+  - protonvpn
+  - raspberry-pi-imager
+  - sketch
+  - transmission
+  - utm
+  - vlc
+  - vscodium
+
+mac_app_store_apps:
+  - 424390742 # Compressor
+  - 424389933 # Final CUt Pro
+  - 361285480 # Keynote
+  - 434290957 # Motion
+  - 361304891 # Numbers
+  - 361309726 # Pages

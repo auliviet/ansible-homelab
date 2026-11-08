@@ -25,6 +25,10 @@ Follow them in order on a fresh install.
   ```
   Test: `ansible-vault view inventory/group_vars/all/vault.yml` opens without asking for password.
 
+### Mac apps
+
+- [ ] Sign in to Apple Store. `mas` cannot sign in and can only install apps already purchased.
+
 ## Debian servers (first boot)
 
 Note: Ansible needs _some_ user it can log in as with a SSH key. After the first run, the `common` role creates a user, as defined in `group_vars/all`.

@@ -1,0 +1,25 @@
+# Basic security settings
+#
+# Variables used:
+#   shared_packages     - /all.yml
+#   mac_packages        - mac.yml
+#   mac_dev_packages    - mac.yml
+#   mac_homebrew_casks  - mac.yml
+#   mac_app_store_apps  - mac.yml
+#
+# Packages are only made present, not upgraded, so a run cannot change versions.
+
+- name: Install Homebrew packages and casks
+  community.general.homebrew:
+    name: "{{ shared_packages + mac_packages + mac_dev_packages }}"
+    state: present
+
+- name: Install Homebrew casks
+  community.general.homebrew:
+    name: "{{ mac_homebrew_casks }}"
+    state: present
+
+- name: Install the Mac App Store apps
+  community.general.mas:
+    id: "{{ mac_app_store_apps }}"
+    state: present
