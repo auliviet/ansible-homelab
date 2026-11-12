@@ -1,0 +1,17 @@
+# Set up TPM and tmux plugins.
+#
+# Variables used:
+#   dotfiles_home       - /all.yml
+
+- name: Clone TPM
+  ansible.builtin.git:
+    repo: https://github.com/tmux-plugins/tpm.git
+    dest: "{{ dotfiles_home }}/.tmux/plugins/tpm"
+    version: master
+    update: false
+
+- name: Install tmux plugins via TPM
+  ansible.builtin.command:
+    cmd: "{{ dotfiles_home }}/.tmux/plugins/tpm/bin/install_plugins"
+  register: dotfiles_tpm_install
+  changed_when: "'Installing' in dotfiles_tpm_install.stdout"

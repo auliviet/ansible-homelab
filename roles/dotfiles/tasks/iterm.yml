@@ -1,0 +1,17 @@
+# Set up iTerm (Mac only)
+#
+# Variables used:
+#   dotfiles_home       - /all.yml
+#   dotfiles_iterm_dir  - /mac.yml
+
+- name: Create the iTerm Dynamic Profiles folder
+  ansible.builtin.file:
+    path: "{{ dotfiles_iterm_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Link iTerm profile
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/iterm2.json"
+    dest: "{{ dotfiles_iterm_dir }}/iterm2.json"
+    state: link

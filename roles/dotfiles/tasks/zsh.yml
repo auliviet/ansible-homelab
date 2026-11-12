@@ -1,0 +1,34 @@
+# Set up zsh, oh-my-zsh, plugins and aliases
+#
+# Variables used:
+#   dotfiles_dir        - /all.yml
+#   dotfiles_home       - /all.yml
+
+- name: Clone oh-my-zsh
+  ansible.builtin.git:
+    repo: https://github.com/ohmyzsh/ohmyzsh.git
+    dest: "{{ dotfiles_home }}/.oh-my-zsh"
+    version: master
+    update: false
+
+- name: Clone oh-my-zsh plugins
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ dotfiles_home }}/.oh-my-zsh/custom/plugins/{{ item.name }}"
+    version: "{{ item.version }}"
+    update: false
+  loop:
+    - name: zsh-autosuggestions
+      repo: https://github.com/zsh-users/zsh-autosuggestions.git
+      version: master
+    - name: zsh-completions
+      repo: https://github.com/zsh-users/zsh-completions.git
+      version: master
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Link my aliases into oh-my-zsh
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/aliases.zsh"
+    dest: "{{ dotfiles_home }}/.oh-my-zsh/custom/aliases.zsh"
+    state: link

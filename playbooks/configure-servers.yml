@@ -2,8 +2,15 @@
 # Always target one host and dry run first:
 #   ansible-playbook playbooks/servers.yml --limit [hostname] --check --diff -K
 
-- name: Apply the common role to all servers
+- name: Apply the common and hardening roles to all servers
   hosts: servers
   roles:
     - common
     - hardening
+
+- name: Apply the dotfiles role to all servers
+  hosts: servers
+  roles:
+    - role: dotfiles
+      become: true
+      become_user: "{{ username }}"

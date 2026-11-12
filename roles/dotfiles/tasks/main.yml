@@ -1,0 +1,57 @@
+# Setup dotfiles and configurations for all apps
+#
+# Variables used:
+#   dotfiles_repo_url   - /all.yml
+#   dotfiles_dir        - /all.yml
+#   dotfiles_links      - /all.yml
+#   dotfiles_home       - /all.yml
+#
+# The playbook runs this role as a normal user (become_user), so every file
+# belongs to that user and not to root.
+
+- name: Clone the dotfiles repository
+  ansible.builtin.git:
+    repo: "{{ dotfiles_repo_url }}"
+    dest: "{{ dotfiles_dir }}"
+    version: main
+    update: true
+
+- name: Check wich dotfiles already exist in the home directory
+  ansible.builtin.stat:
+    path: "{{ dotfiles_home }}/ {{ item }}"
+    follow: false
+  loop: "{{ dotfiles_links }}"
+  register: dotfiles_existing
+
+- name: Backup existing dotfiles that are not symlinks
+  ansible.builtin.command:
+    cmd: mv "{{ dotfiles_home }}/{{ item.tem }}" "{{ dotfiles_home }}/{{ item.item }}.old"
+    creates: "{{ dotfiles_home }}/{{ item.item }}.old"
+  loop: "{{ dotfiles_existing.results }}"
+  when: item.stat.exists and not item.stat.islnk
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Symlink the dotfiles in the home directory
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/{{ item }}"
+    dest: "{{ dotfiles_home }}/{{ item }}"
+    state: link
+  loop: "{{ dotfiles_links }}"
+
+- name: Set up zsh
+  ansible.builtin.import_tasks: zsh.yml
+
+- name: Set up vim
+  ansible.builtin.import_tasks: vim.yml
+
+- name: Set up tmux
+  ansible.builtin.import_tasks: tmux.yml
+
+- name: Set up iTerm
+  ansible.builtin.import_tasks: iterm.yml
+  when: ansible_facts['system'] == 'Darwin'
+
+- name: Set up VSCodium
+  ansible.builtin.import_tasks: vscodium.yml
+  when: ansible_facts['system'] == 'Darwin'

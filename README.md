@@ -19,6 +19,7 @@ any machine can be wiped and rebuilt from it plus a backup.
 - Host names come from `~/.ssh/config` on the Mac.
 - Variables live only in `inventory/`. Roles have no defaults.
 - Secrets are kept in ansible-vault.
+- Dotfiles configurations are pulled from a git repository `https://github.com/auliviet/dotfiles.git`
 
 ## Layout
 
@@ -39,8 +40,9 @@ plabyooks/
   configure-servers.yml # Configure Debian servers
 roles/
   common/               # Base steps for Debian (user, SSH, timezone, default packages)
-  macos_apps/           # Apps for MacOs
+  dotfiles/             # Dotfiles, preferences and configs
   hardening/            # Security settings
+  macos_apps/           # Apps for MacOs
 MANUAL-STEPS.md         # Steps that can't be automated
 ```
 

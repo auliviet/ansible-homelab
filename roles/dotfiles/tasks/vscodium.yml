@@ -1,0 +1,69 @@
+# Set up VSCodium (Mac only)
+#
+# Variables used:
+#   dotfiles_home           - /all.yml
+#   dotfiles_vscodium_dir   - /mac.yml
+#   dotfiles_vscodium_links - /mac.yml
+
+- name: Create the VSCodium User folder
+  ansible.builtin.file:
+    path: "{{ dotfiles_vscodium_dir }}"
+    state: directory
+    mode: "0755"
+
+- name: Check VSCodium files already existing
+  ansible.builtin.stat:
+    path: "{{ dotfiles_vscodium_dir }}/{{ item.dest }}"
+    follow: false
+  loop: "{{ dotfiles_vscodium_links }}"
+  register: dotfiles_vscodium_existing
+  loop_control:
+    label: "{{ item.dest }}"
+
+- name: Backup existing VSCodium files
+  ansible.builtin.command:
+    cmd: mv "{{ dotfiles_vscodium_dir }}/{{ item.item.dest }}" "{{ dotfiles_vscodium_dir }}/{{ item.item.dest }}.old"
+    creates: "{{ dotfiles_vscodium_dir }}/{{ item.item.dest }}.old"
+  loop: "{{ dotfiles_vscodium_existing.results }}"
+  when: item.stat.exists and not item.stat.islnk
+  loop_control:
+    label: "{{ item.item.dest }}"
+
+- name: Link VSCodium settings and keybindings
+  ansible.builtin.file:
+    src: "{{ dotfiles_dir }}/{{ item.src }}"
+    dest: "{{ dotfiles_vscodium_dir }}/{{ item.dest }}"
+    state: link
+  loop: "{{ dotfiles_vscodium_links }}"
+  loop_control:
+    label: "{{ item.dest }}"
+
+- name: Read the list of VSCodium extensions
+  ansible.builtin.slurp:
+    src: "{{ dotfiles_dir }}/vscodium.extensions.txt"
+  register: dotfiles_vscodium_extensions
+
+- name: List installed VSCodium extensions
+  ansible.builtin.command:
+    cmd: codium --list-extensions
+  register: dotfiles_vscodium_installed
+  changed_when: false
+
+- name: List installed VSCodium extensions
+  ansible.builtin.command:
+    cmd: codium --list-extensions
+  register: dotfiles_vscodium_installed
+  changed_when: false
+  check_mode: false
+
+- name: List missing extensions
+  ansible.builtin.set_fact:
+    dotfiles_vscodium_missing: "{{ wanted | difference(installed) }}"
+  vars:
+    wanted: "{{ (dotfiles_vscodium_extensions.content | b64decode).splitlines() | select('match', '^[A-Za-z0-9]') | map('lower') | list }}"
+    installed: "{{ dotfiles_vscodium_installed.stdout_lines | map('lower') | list }}"
+
+- name: Install missing VSCodium extensions
+  ansible.builtin.command:
+    cmd: codium --install-extension {{ item }}
+  loop: "{{ dotfiles_vscodium_missing }}"

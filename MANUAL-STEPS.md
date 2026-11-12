@@ -29,6 +29,10 @@ Follow them in order on a fresh install.
 
 - [ ] Sign in to Apple Store. `mas` cannot sign in and can only install apps already purchased.
 
+### iTerm
+
+- [ ] After the first run of `configure-mac.yml`, open iTerm > Settings > Profiles. Select the `Dotfiles` profile and set as default.
+
 ## Debian servers (first boot)
 
 Note: Ansible needs _some_ user it can log in as with a SSH key. After the first run, the `common` role creates a user, as defined in `group_vars/all`.

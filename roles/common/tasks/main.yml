@@ -6,23 +6,6 @@
 #   shared_packages          - inventory/group_vars/all.yaml
 #   common_servers_packages  - inventory/group_vars/servers.yaml
 
-- name: Add username to the sudo group
-  ansible.builtin.user:
-    name: "{{ username }}"
-    password: "{{ user_password_hash }}"
-    update_password: on_create
-    groups: sudo
-    append: true
-    shell: /bin/bash
-  become: true
-
-- name: Add SSH key to the users
-  ansible.posix.authorized_key:
-    user: "{{ username }}"
-    key: "{{ ssh_public_key }}"
-    state: present
-  become: true
-
 - name: Install the shared packages
   ansible.builtin.apt:
     name: "{{ shared_packages }}"
@@ -37,6 +20,23 @@
     state: present
     update_cache: true
     cache_valid_time: 3600
+  become: true
+
+- name: Create the user, add to sudo group and set zsh as its shell
+  ansible.builtin.user:
+    name: "{{ username }}"
+    password: "{{ user_password_hash }}"
+    update_password: on_create
+    groups: sudo
+    append: true
+    shell: /usr/bin/zsh
+  become: true
+
+- name: Add SSH key to the users
+  ansible.posix.authorized_key:
+    user: "{{ username }}"
+    key: "{{ ssh_public_key }}"
+    state: present
   become: true
 
 - name: Set the timezone

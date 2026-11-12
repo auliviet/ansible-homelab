@@ -6,3 +6,4 @@
   hosts: mac
   roles:
     - macos_apps
+    - dotfiles

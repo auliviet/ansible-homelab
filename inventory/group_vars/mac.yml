@@ -1,5 +1,4 @@
 mac_packages:
-  - fzf
   - mas
   - tlrc
 
@@ -36,3 +35,12 @@ mac_app_store_apps:
   - 434290957 # Motion
   - 361304891 # Numbers
   - 361309726 # Pages
+
+dotfiles_home: "/Users/{{ username }}"
+dotfiles_iterm_dir: "{{ dotfiles_home }}/Library/Application Support/iTerm2/DynamicProfiles"
+dotfiles_vscodium_dir: "{{ dotfiles_home }}/Library/Application Support/VSCodium/user"
+dotfiles_vscodium_links:
+  - src: vscodium.settings.json
+    dest: settings.json
+  - src: vscodium.keybindings.json
+    dest: keybindings.json

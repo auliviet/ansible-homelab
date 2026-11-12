@@ -1,0 +1,24 @@
+# Set up vim, vim-sensible and colour scheme
+#
+# Variables used:
+#   dotfiles_home       - /all.yml
+
+- name: Clone vim-sensible
+  ansible.builtin.git:
+    repo: https://github.com/tpope/vim-sensible.git
+    dest: "{{ dotfiles_home }}/.vim/pack/plugins/start/sensible"
+    version: master
+    update: false
+
+- name: Clone the Catppuccin theme for vim
+  ansible.builtin.git:
+    repo: https://github.com/catppuccin/vim.git
+    dest: "{{ dotfiles_home }}/.vim/pack/plugins/start/catppuccin"
+    version: main
+    update: false
+
+- name: Link the Catppuccin colour files
+  ansible.builtin.file:
+    src: "{{ dotfiles_home }}/.vim/pack/plugins/start/catppuccin/colors"
+    dest: "{{ dotfiles_home }}/.vim/colors"
+    state: link

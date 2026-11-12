@@ -3,6 +3,7 @@ username: auliviet
 timezone: Australia/Sydney
 shared_packages:
   - curl
+  - fzf
   - git
   - htop
   - tmux
@@ -12,3 +13,12 @@ shared_packages:
 
 # Password hash from vault.yml
 user_password_hash: "{{ vault_user_password_hash }}"
+
+# Dotfiles
+dotfiles_repo_url: https://github.com/auliviet/dotfiles.git
+dotfiles_dir: "{{ dotfiles_home }}/.dotfiles"
+dotfiles_links:
+  - .zshrc
+  - .gitconfig
+  - .vimrc
+  - .tmux.conf
