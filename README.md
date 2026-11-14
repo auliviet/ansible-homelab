@@ -35,9 +35,10 @@ inventory/
     mac.yml             # Variables for MacOs
     servers.yml         # Variables for Debian servers
     public_servers.yml  # Overrides for public servers
-plabyooks/
+playbooks/
   configure-mac.yml     # Configure Mac host
   configure-servers.yml # Configure Debian servers
+  patch-servers.yml     # Upgrade packages and reboot Debian servers
 roles/
   common/               # Base steps for Debian (user, SSH, timezone, default packages)
   dotfiles/             # Dotfiles, preferences and configs
@@ -62,13 +63,13 @@ ansible-inventory --graph
 # Check Ansible can reach every host
 ansible all -m ansible.builtin.ping
 
-# First run on a new VPS with debian provided user
+# First run on a new VPS with debian provided user: dry run first, then apply
 # (Hardening blocks subsequent access from provided users after first run)
-ansible-playbook playbooks/configure-servers.yml --limit $HOSTNAME -u debian
+ansible-playbook playbooks/configure-servers.yml --limit <target-host> --check -- diff -u debian
+ansible-playbook playbooks/configure-servers.yml --limit <target-host> -u debian
 
-# Configure one server: dry run first, then apply
-ansible-playbook playbooks/configure-servers.yml --limit $HOSTNAME --check --diff
-ansible-playbook playbooks/configure-servers.yml --limit $HOSTNAME
+# Next runs don't need '-u debian'
+ansible-playbook playbooks/configure-servers.yml --limit <target-host>
 
 # Configure the mac: dry run first, then apply
 # Sign in to App Store first (see MANUAL-STEPS.md)
@@ -84,7 +85,10 @@ ansible-vault view inventory/group_vars/all/vault.yml
 ansible-vault edit inventory/group_vars/all/vault.yml
 
 # Check the code
-ansible-lint playbooks/configure-servers.yml
+ansible-lint playbooks/<playbook>.yml
+
+# Upgrade Debian servers
+ansible-playbook playbooks/patch-servers.yml
 ```
 
 No `-J` or `-K` needed. Vault password comes from the keychain (`vault-pass.sh`)

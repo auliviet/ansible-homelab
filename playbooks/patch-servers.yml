@@ -1,0 +1,23 @@
+# Patch Debian servers, upgrade all packages, reboot if required
+# Playbook runs on one server at a time.
+# Dry run first:
+#   ansible-playbook playbooks/patch-servers.yml --limit [hostname] --check --diff
+#
+# Variables used:
+# - ansible_become_password - /servers.yml
+
+- name: Path the servers
+  hosts: servers
+  serial: 1 # one host per batch. If a batch fails, the play stos before impacting other hosts
+  tasks:
+    - name: Upgrade all packages and remove the old ones
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+      become: true
+
+    - name: Reboot the server
+      ansible.builtin.reboot:
+        reboot_timeout: 600
+      become: true

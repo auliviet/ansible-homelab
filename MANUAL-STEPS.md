@@ -53,7 +53,9 @@ On a fresh MacOS install, follow this order.
 - [ ] Open a new terminal window so the dotfiles take effect.
 - [ ] After the first run of `configure-mac.yml`, open iTerm > Settings > Profiles. Select the `Dotfiles` profile and set as default.
 
-## Debian servers (first boot)
+## Debian servers
+
+### First boot
 
 Note: Ansible needs _some_ user it can log in as with a SSH key. After the first run, the `common` role creates a user, as defined in `group_vars/all`.
 
@@ -67,6 +69,14 @@ Note: Ansible needs _some_ user it can log in as with a SSH key. After the first
 
 - [ ] Before applying `hardening` role, open an SSH connection with the provided user.
 - [ ] Test the new username defined in `group_vars/all` can be used to connect via ssh: `ssh $USERNAME@$HOSTNAME` and `sudo whoami`
+
+### Patching
+
+Run `patch-servers.yml` roughly once a month. It install lastest packages and reboot the servers.
+After each upgrade:
+
+- [ ] Check that SSH is working
+- [ ] Check that the app installed are accessible
 
 ## Secrets to keep in the password manager
 
