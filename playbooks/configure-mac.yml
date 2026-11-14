@@ -1,6 +1,6 @@
 # Configure Mac main machine
 # Always target one host and dry run first:
-#   ansible-playbook playbooks/configure-mac.yml --limit [hostname] --check --diff -K
+#   ansible-playbook playbooks/configure-mac.yml --limit [hostname] --check --diff
 
 - name: Configure the Mac
   hosts: mac
