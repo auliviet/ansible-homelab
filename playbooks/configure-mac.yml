@@ -7,3 +7,4 @@
   roles:
     - macos_apps
     - dotfiles
+    - macos_defaults

@@ -44,3 +44,25 @@ dotfiles_vscodium_links:
     dest: settings.json
   - src: vscodium.keybindings.json
     dest: keybindings.json
+
+macos_defaults_dock:
+  - { domain: com.apple.dock, key: largesize, type: float, value: 16 }
+  - { domain: com.apple.dock, key: autohide, type: int, value: 0 }
+  - { domain: com.apple.dock, key: mineffect, type: string, value: genie }
+  - { domain: com.apple.dock, key: show-recents, type: int, value: 0 }
+
+macos_defaults_finder:
+  - { domain: com.apple.finder, key: ShowPathbar, type: int, value: 1 }
+  - { domain: com.apple.finder, key: ShowStatusBar, type: int, value: 1 }
+  - {
+      domain: com.apple.finder,
+      key: FXArrageGroupViewBy,
+      type: string,
+      value: Name,
+    }
+  - {
+      domain: com.apple.finder,
+      key: FXPreferredViewStyle,
+      type: string,
+      value: clmv,
+    }

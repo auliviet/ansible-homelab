@@ -1,0 +1,29 @@
+# Set MacOS preferences: Doc, Finder, keyboard and trackpad
+#
+# Variables used:
+#   macos_defaults_dock            - /mac.yml
+#   macos_defaults_finder          - /mac.yml
+
+- name: Set the Dock preferences
+  community.general.osx_defaults:
+    domain: "{{ item.domain }}"
+    key: "{{ item.key }}"
+    type: "{{ item.type }}"
+    value: "{{ item.value }}"
+    state: present
+  loop: "{{ macos_defaults_dock }}"
+  loop_control:
+    label: "{{ item.domain }} {{ item.key }}"
+  notify: Restart the Dock
+
+- name: Set the Finder preferences
+  community.general.osx_defaults:
+    domain: "{{ item.domain }}"
+    key: "{{ item.key }}"
+    type: "{{ item.type }}"
+    value: "{{ item.value }}"
+    state: present
+  loop: "{{ macos_defaults_finder }}"
+  loop_control:
+    label: "{{ item.domain }} {{ item.key }}"
+  notify: Restart the Finder

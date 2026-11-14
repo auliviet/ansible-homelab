@@ -5,7 +5,16 @@ Follow them in order on a fresh install.
 
 ## Mac (control node)
 
-- [ ] Install Homebrew: see https://brew.sh
+On a fresh MacOS install, follow this order.
+
+### Before running Ansible
+
+- [ ] Sign in to iCloud. Passwords app holds the Ansible vault password.
+- [ ] Sign in to Apple Store. `mas` cannot sign in and can only install apps already purchased.
+- [ ] Install Homebrew:
+  ```bash
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  ```
 - [ ] Install Ansible and ansible-lint:
   ```bash
   brew install ansible ansible-lint
@@ -16,21 +25,32 @@ Follow them in order on a fresh install.
   ```
 - [ ] Create `~/.ssh/config` with one `Host` entry per machine (see README).
 - [ ] Clone this repo and install collections:
+
   ```bash
   ansible-galaxy collection install -r requirements.yml
   ```
+
+  Run every Ansible command from the repo root, so Ansible picks up `ansible.cfg`.
+
 - [ ] Copy the Ansible vault password (from the Passwords app) into the login keychain so `vault-pass.sh` can read it:
   ```bash
   security add-generic-password -a "$USER" -s ansible-vault  -w
   ```
   Test: `ansible-vault view inventory/group_vars/all/vault.yml` opens without asking for password.
 
-### Mac apps
+### Run the playbook
 
-- [ ] Sign in to Apple Store. `mas` cannot sign in and can only install apps already purchased.
+- [ ] Dryn run, then apply:
+  ```bash
+  ansible-playbook playbooks/configure-mac.yml --check --diff
+  ansible-playbook playbooks/configure-mac.yml
+  ```
+  On a fresh install, the dry run may fail due to some required apps missing.
+- [ ] Run it a second time. It should report `changed=0`.
 
-### iTerm
+### After the first run
 
+- [ ] Open a new terminal window so the dotfiles take effect.
 - [ ] After the first run of `configure-mac.yml`, open iTerm > Settings > Profiles. Select the `Dotfiles` profile and set as default.
 
 ## Debian servers (first boot)
@@ -45,8 +65,8 @@ Note: Ansible needs _some_ user it can log in as with a SSH key. After the first
   ansible-playbook playbooks/configure-servers.yml --limit $HOSTNAME -u debian
   ```
 
-  - Before applying `hardening` role, open an SSH connection with the provided user.
-  - Test the new username defined in `group_vars/all` can be used to connect via ssh: `ssh $USERNAME@$HOSTNAME` and `sudo whoami`
+- [ ] Before applying `hardening` role, open an SSH connection with the provided user.
+- [ ] Test the new username defined in `group_vars/all` can be used to connect via ssh: `ssh $USERNAME@$HOSTNAME` and `sudo whoami`
 
 ## Secrets to keep in the password manager
 

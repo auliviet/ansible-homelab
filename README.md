@@ -43,6 +43,7 @@ roles/
   dotfiles/             # Dotfiles, preferences and configs
   hardening/            # Security settings
   macos_apps/           # Apps for MacOs
+  macos_defaults/       # Default settings for MacOS
 MANUAL-STEPS.md         # Steps that can't be automated
 ```
 
@@ -84,7 +85,6 @@ ansible-vault edit inventory/group_vars/all/vault.yml
 
 # Check the code
 ansible-lint playbooks/configure-servers.yml
-ansible-lint playbooks/configure-mac.yml
 ```
 
 No `-J` or `-K` needed. Vault password comes from the keychain (`vault-pass.sh`)
