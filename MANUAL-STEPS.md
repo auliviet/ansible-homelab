@@ -53,6 +53,17 @@ On a fresh MacOS install, follow this order.
 - [ ] Open a new terminal window so the dotfiles take effect.
 - [ ] After the first run of `configure-mac.yml`, open iTerm > Settings > Profiles. Select the `Dotfiles` profile and set as default.
 
+### Patching
+
+Run `patch-mac.yml` roughly once a month. It upgrades Homebrew formulae and App Store apps.
+
+- [ ] Ensure you are signed in to App Store.
+- [ ] Quit all applications. Upgraded apps need to be restarted.
+- [ ] Upgrade casks in a terminal, as it requires sudo password:
+  ```bash
+  brew upgrade --cask
+  ```
+
 ## Debian servers
 
 ### First boot

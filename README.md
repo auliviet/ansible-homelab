@@ -39,6 +39,7 @@ playbooks/
   configure-mac.yml     # Configure Mac host
   configure-servers.yml # Configure Debian servers
   patch-servers.yml     # Upgrade packages and reboot Debian servers
+  patch-mac.yml         # Upgrade homebrew formulae and App Store apps
 roles/
   common/               # Base steps for Debian (user, SSH, timezone, default packages)
   dotfiles/             # Dotfiles, preferences and configs
@@ -89,6 +90,9 @@ ansible-lint playbooks/<playbook>.yml
 
 # Upgrade Debian servers
 ansible-playbook playbooks/patch-servers.yml
+
+# Upgrade Mac
+ansible-playbook playbooks/patch-mac.yml
 ```
 
 No `-J` or `-K` needed. Vault password comes from the keychain (`vault-pass.sh`)

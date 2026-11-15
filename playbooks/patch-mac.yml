@@ -1,0 +1,17 @@
+# Patch the Mac, upgrade Homebrew formulae and casks, and App Store apps.
+# Dry run first:
+#   ansible-playbook playbooks/patch-mac.yml --limit [hostname] --check --diff
+
+- name: Path the Mac
+  hosts: mac
+  tasks:
+    - name: Upgrade Homebrew formulae
+      community.general.homebrew:
+        update_homebrew: true
+        upgrade_all: true
+        upgrade_options:
+          - formula
+
+    - name: Upgrade App Store apps
+      community.general.mas:
+        upgrade_all: true
