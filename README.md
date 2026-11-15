@@ -56,13 +56,18 @@ Run every command from the repo root, so Ansible picks up `ansible.cfg`.
 
 ```bash
 # Install Ansible requirements. Required once, and after editing requirements.yml
-ansible-galaxy collection install -r requirements.yml
+ansible-galaxy collection install -r requirements.yml --upgrade
 
 # Show groups and hosts
 ansible-inventory --graph
 
 # Check Ansible can reach every host
 ansible all -m ansible.builtin.ping
+
+# Configure the mac: dry run first, then apply
+# Sign in to App Store first (see MANUAL-STEPS.md)
+ansible-playbook playbooks/configure-mac.yml --check --diff
+ansible-playbook playbooks/configure-mac.yml
 
 # First run on a new VPS with debian provided user: dry run first, then apply
 # (Hardening blocks subsequent access from provided users after first run)
@@ -71,11 +76,6 @@ ansible-playbook playbooks/configure-servers.yml --limit <target-host> -u debian
 
 # Next runs don't need '-u debian'
 ansible-playbook playbooks/configure-servers.yml --limit <target-host>
-
-# Configure the mac: dry run first, then apply
-# Sign in to App Store first (see MANUAL-STEPS.md)
-ansible-playbook playbooks/configure-mac.yml --check --diff
-ansible-playbook playbooks/configure-mac.yml
 ```
 
 ## Common commands

@@ -27,7 +27,7 @@ On a fresh MacOS install, follow this order.
 - [ ] Clone this repo and install collections:
 
   ```bash
-  ansible-galaxy collection install -r requirements.yml
+  ansible-galaxy collection install -r requirements.yml --upgrade
   ```
 
   Run every Ansible command from the repo root, so Ansible picks up `ansible.cfg`.
@@ -38,9 +38,34 @@ On a fresh MacOS install, follow this order.
   ```
   Test: `ansible-vault view inventory/group_vars/all/vault.yml` opens without asking for password.
 
+### Vault variables
+
+Two secrets are encrypted in ansible-vault (`inventory/groupvars/all/vault.yml`). Both must exist before `configure-servers.yml` can run.
+
+| Variable                   | Content                  | Used by                                           |
+| -------------------------- | ------------------------ | ------------------------------------------------- |
+| `vault-user-password`      | Plain text password      | `ansible_become_password` so Ansible can use sudo |
+| `vault-user-password-hash` | SHA-512 hash of password | `use_password_hash` to create a new user          |
+
+**On a fresh Mac, these should already exist.**
+`vault.yml` is tracked in the repo and encrypted. Once the vault password is in the keychain, both variables are accessible with:
+
+```bash
+ansible-vault view inventory/group_vars/all/vault.yml
+```
+
+To create them from scratch (new vault or new server password):
+
+- [ ] Generate the hash:
+  ```bash
+  $(brew --prefix openssl@3)/bin/openssl passwd -6
+  ```
+- [ ] Add both variables to the vault.
+- [ ] Save the plain password in a password manager.
+
 ### Run the playbook
 
-- [ ] Dryn run, then apply:
+- [ ] Dry run, then apply:
   ```bash
   ansible-playbook playbooks/configure-mac.yml --check --diff
   ansible-playbook playbooks/configure-mac.yml
